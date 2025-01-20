@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            margin: 20px 0;
+        }
+        input[type="text"], input[type="password"], input[type="submit"] {
+            padding: 10px;
+            width: 100%;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .message {
+            color: #333;
+            font-size: 14px;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Register, Login, and Reset Password</h2>
+
+<!-- Registration Form -->
+<div>
+    <h3>Register</h3>
+    <form id="registerForm">
+        <input type="text" id="regUsername" placeholder="Enter username" required>
+        <input type="password" id="regPassword" placeholder="Enter password" required>
+        <input type="submit" value="Register">
+    </form>
+    <p id="registerMessage" class="message"></p>
+</div>
+
+<!-- Login Form -->
+<div>
+    <h3>Login</h3>
+    <form id="loginForm">
+        <input type="text" id="loginUsername" placeholder="Enter username" required>
+        <input type="password" id="loginPassword" placeholder="Enter password" required>
+        <input type="submit" value="Login">
+    </form>
+    <p id="loginMessage" class="message"></p>
+</div>
+
+<!-- Password Reset Form -->
+<div>
+    <h3>Reset Password</h3>
+    <form id="resetPasswordForm">
+        <input type="text" id="resetUsername" placeholder="Enter username" required>
+        <input type="password" id="newPassword" placeholder="Enter new password" required>
+        <input type="submit" value="Reset Password">
+    </form>
+    <p id="resetMessage" class="message"></p>
+</div>
+
+<script>
+    // Function to handle form submissions
+    document.getElementById('registerForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const username = document.getElementById('regUsername').value;
+        const password = document.getElementById('regPassword').value;
+        
+        fetch('http://localhost:3000/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('registerMessage').textContent = data.message;
+            if (data.message === "User registered successfully") {
+                document.getElementById('registerMessage').classList.add('success');
+                document.getElementById('registerMessage').classList.remove('error');
+            } else {
+                document.getElementById('registerMessage').classList.add('error');
+                document.getElementById('registerMessage').classList.remove('success');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('loginMessage').textContent = data.message;
+            if (data.message === "Login successful") {
+                document.getElementById('loginMessage').classList.add('success');
+                document.getElementById('loginMessage').classList.remove('error');
+            } else {
+                document.getElementById('loginMessage').classList.add('error');
+                document.getElementById('loginMessage').classList.remove('success');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById('resetPasswordForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const username = document.getElementById('resetUsername').value;
+        const newPassword = document.getElementById('newPassword').value;
+        
+        fetch('http://localhost:3000/reset-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, newPassword })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('resetMessage').textContent = data.message;
+            if (data.message === "Password reset successful") {
+                document.getElementById('resetMessage').classList.add('success');
+                document.getElementById('resetMessage').classList.remove('error');
+            } else {
+                document.getElementById('resetMessage').classList.add('error');
+                document.getElementById('resetMessage').classList.remove('success');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+
+</body>
+</html>
+
