@@ -1,0 +1,36 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Log files
+*.log
+
+# Environment variables
+.env
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Docker-related
+.docker/
+docker-compose.override.yml
+docker-compose.prod.yml
+
+# VSCode/IDE files
+.vscode/
+.idea/
+
+# Other build files
+.next/
+dist/
+build/
+
+# Package lock files (optional, if you want to ignore them)
+package-lock.json
+
+# System files
+*~
+*.swp
+.Trash-*
