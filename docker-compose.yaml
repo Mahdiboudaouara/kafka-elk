@@ -31,3 +31,21 @@ services:
     environment:
       LOGSTASH_JAVA_OPTS: "-Xms256m -Xmx256m"  # Set Java options for Logstash
 
+  elasticsearch:
+    image: elasticsearch:8.16.2
+    container_name: elasticsearch
+    networks:
+      - kafka-elk-network  # Connect Elasticsearch to the shared network
+    environment:
+      - discovery.type=single-node  # Single node setup for local use
+      - bootstrap.memory_lock=true  # Prevent swapping
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # Set JVM options
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"  # Elasticsearch HTTP
+      - "9300:9300"  # Elasticsearch transport
+    volumes:
+      - ./elasticsearch-config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml  # Mount the custom config
