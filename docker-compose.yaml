@@ -1,14 +1,13 @@
-version: '2'
-
 networks:
-  app-tier:
-    driver: bridge
+  kafka-elk-network:
+    driver: bridge  # Define the bridge network
 
 services:
   kafka:
     image: 'bitnami/kafka:latest'
+    container_name: kafka
     networks:
-      - app-tier
+      - kafka-elk-network  # Connect Kafka to the shared network
     environment:
       - KAFKA_CFG_NODE_ID=0
       - KAFKA_CFG_PROCESS_ROLES=controller,broker
@@ -19,5 +18,16 @@ services:
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
     ports:
       - "9092:9092"
-      - "9093:9093"  # Expose the controller port to the host machine
+      - "9093:9093"  # Expose the Kafka ports
+
+  logstash:
+    image: logstash:8.16.2
+    container_name: logstash
+    networks:
+      - kafka-elk-network  # Connect Logstash to the same shared network
+    volumes:
+      - ./logstash-config/logstash.yml:/usr/share/logstash/config/logstash.yml  # Mount custom config
+      - ./logstash-config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro  # Mount your Logstash config
+    environment:
+      LOGSTASH_JAVA_OPTS: "-Xms256m -Xmx256m"  # Set Java options for Logstash
 
